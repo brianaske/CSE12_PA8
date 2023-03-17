@@ -202,8 +202,21 @@ public class MyBST<K extends Comparable<K>, V> {
     }
 
     public ArrayList<MyBSTNode<K, V>> inorder() {
-        // TODO
-        return null;
+        ArrayList<MyBSTNode<K,V>> inorderList = new ArrayList<>();
+        MyBSTNode<K,V> curr = this.root;
+        if (this.size == 0){
+            return inorderList;
+        }
+        this.inorderHelper(root, inorderList);
+        return inorderList;
+    }
+
+    protected void inorderHelper(MyBSTNode node, ArrayList<MyBSTNode<K, V>> addList){
+        if (node != null){
+            inorderHelper(node.getLeft(), addList);
+            addList.add(node);
+            inorderHelper(node.getRight(), addList);
+        }
     }
 
     static class MyBSTNode<K, V> {
@@ -331,7 +344,7 @@ public class MyBST<K extends Comparable<K>, V> {
             else if (this.right == null){
                 MyBSTNode curr = this;
                 MyBSTNode parent = this.parent;
-                while (parent != null && parent.right == this){
+                while (parent != null && parent.right == curr){
                     curr = parent;
                     parent = curr.parent;
                 }
