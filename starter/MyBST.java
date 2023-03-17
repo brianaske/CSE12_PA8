@@ -1,15 +1,34 @@
+/*
+ * Name: Brian Huang
+ * Email: cch002@ucsd.edu
+ * PID: A17694562
+ * SOurce used: CSE12 PA8 write-up, Lecture side, zybook
+ * 
+ * This file implements MyBST
+ */
 import java.util.ArrayList;
 
-//This is the line for the latest update
-
+/**
+ * This class implements myBST
+ */
 public class MyBST<K extends Comparable<K>, V> {
     MyBSTNode<K, V> root = null;
     int size = 0;
 
+    /**
+     * This method evaluates the size.
+     * @return the size of the tree
+     */
     public int size() {
         return size;
     }
 
+    /**
+     * This method insert an value to the tree
+     * @param key the key
+     * @param value the value
+     * @return the value that is replaced
+     */
     public V insert(K key, V value) {
         // TODO
         if (key == null){
@@ -22,7 +41,7 @@ public class MyBST<K extends Comparable<K>, V> {
         return insertHelper(root, key, value);
     }
 
-    protected V insertHelper(MyBSTNode curr, K key, V value){
+    private V insertHelper(MyBSTNode curr, K key, V value){
 
         int compareResult = ((Comparable<K>) curr.getKey()).compareTo(key);
 
@@ -53,12 +72,17 @@ public class MyBST<K extends Comparable<K>, V> {
         }
     }
 
+    /**
+     * search for certain key
+     * @param key the key
+     * @return the value
+     */
     public V search(K key) {
         // TODO
         return searchHelper(root, key);
     }
 
-    protected V searchHelper(MyBSTNode curr, K key){
+    private V searchHelper(MyBSTNode curr, K key){
         int compareResult = ((Comparable<K>) curr.getKey()).compareTo(key);
         if (compareResult == 0){
             return (V) curr.getValue();
@@ -77,6 +101,11 @@ public class MyBST<K extends Comparable<K>, V> {
         }
     }
 
+    /**
+     * REmove certain node
+     * @param key the key reference
+     * @return the value that is removed
+     */
     public V remove(K key) {
 
         MyBSTNode<K,V> curr = removeHelper(root, key);
@@ -95,16 +124,16 @@ public class MyBST<K extends Comparable<K>, V> {
                 size--;
                 return removedValue;
             }
-            else if (curr.getLeft() != null && curr.getRight() == null){
-                root = curr.getLeft();
-                size--;
-                return removedValue;
-            }
-            else if (curr.getLeft() ==null && curr.getRight() != null){
-                root = curr.getRight();
-                size--;
-                return removedValue;
-            }
+            // else if (curr.getLeft() != null && curr.getRight() == null){
+            //     root = curr.getLeft();
+            //     size--;
+            //     return removedValue;
+            // }
+            // else if (curr.getLeft() ==null && curr.getRight() != null){
+            //     root = curr.getRight();
+            //     size--;
+            //     return removedValue;
+            // }
         }
 
         //a leaf node
@@ -124,6 +153,7 @@ public class MyBST<K extends Comparable<K>, V> {
 
         //a node with one children
         if (curr.getLeft() == null ^ curr.getRight() == null){
+            System.out.println("this is a non-leaf node");
             int compareWithParent = curr.getKey().compareTo(curr.parent.getKey());
             if (compareWithParent > 0){
                 if (curr.getLeft() != null){
@@ -153,13 +183,19 @@ public class MyBST<K extends Comparable<K>, V> {
 
         //
         if (curr.getLeft() != null && curr.getRight() != null){
+            System.out.println("This node is a parent with 2 children");
             MyBSTNode<K,V> successor = curr.successor();
+            System.out.println("the successor key is");
+            System.out.println(successor.getKey());
             K swapKey = curr.getKey();
             V swapValue = curr.getValue();
             curr.setKey(successor.getKey());
             curr.setValue(successor.getValue());
             successor.setKey(swapKey);
             successor.setValue(swapValue);
+            System.out.println("Now after sawpping, the successor key is");
+            System.out.println(successor.getKey());
+            curr = successor;
             while (curr.getRight() != null){
                 swapKey = curr.getKey();
                 swapValue = curr.getValue();
@@ -183,7 +219,7 @@ public class MyBST<K extends Comparable<K>, V> {
         return null;
     }
 
-    protected MyBSTNode<K,V> removeHelper(MyBSTNode curr, K key){
+    private MyBSTNode<K,V> removeHelper(MyBSTNode curr, K key){
         int compareResult = ((Comparable<K>) curr.getKey()).compareTo(key);
         if (compareResult == 0){
             return curr;
@@ -202,6 +238,10 @@ public class MyBST<K extends Comparable<K>, V> {
         }
     }
 
+    /**
+     * Make inorder traversal
+     * @return arrayList of inorder elements
+     */
     public ArrayList<MyBSTNode<K, V>> inorder() {
         ArrayList<MyBSTNode<K,V>> inorderList = new ArrayList<>();
         MyBSTNode<K,V> curr = this.root;
@@ -212,7 +252,7 @@ public class MyBST<K extends Comparable<K>, V> {
         return inorderList;
     }
 
-    protected void inorderHelper(MyBSTNode node, ArrayList<MyBSTNode<K, V>> addList){
+    private void inorderHelper(MyBSTNode node, ArrayList<MyBSTNode<K, V>> addList){
         if (node != null){
             inorderHelper(node.getLeft(), addList);
             addList.add(node);
@@ -220,6 +260,9 @@ public class MyBST<K extends Comparable<K>, V> {
         }
     }
 
+    /**
+     * This class implements BST nodes
+     */
     static class MyBSTNode<K, V> {
         private static final String TEMPLATE = "Key: %s, Value: %s";
         private static final String NULL_STR = "null";
